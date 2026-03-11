@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "nx",
+    "prepare": "husky",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
     "nx": "nx",
     "start": "ng serve",
@@ -32,7 +33,10 @@
     "serve:api": "nx serve api",
     "serve:api-conduit": "concurrently -p=\"{name}\" -n=\"Conduit,API\" -c=\"blue,yellow\" \"npm run serve:conduit\" \"npm run serve:api\"",
     "build-prod:conduit": "nx build conduit --prod",
-    "build-prod:api": "nx build api --prod"
+    "build-prod:api": "nx build api --prod",
+    "validate": "concurrently -n \"lint-staged,tsc\" \"npx lint-staged\" \"npx tsc --noEmit\"",
+    "test:affected": "npx nx affected:test --base=master",
+    "lint:affected": "npx nx affected:lint --base=master"
   },
   "private": true,
   "dependencies": {
@@ -84,6 +88,8 @@
     "@angular/cli": "~11.0.0",
     "@angular/compiler-cli": "^11.2.0",
     "@angular/language-service": "^11.2.0",
+    "@commitlint/cli": "^20.4.3",
+    "@commitlint/config-conventional": "^20.4.3",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
     "@nrwl/cli": "11.5.2",
@@ -104,8 +110,10 @@
     "eslint": "7.10.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
+    "husky": "^9.1.7",
     "jest": "26.2.2",
     "jest-preset-angular": "8.3.2",
+    "lint-staged": "^16.3.3",
     "prettier": "2.2.1",
     "ts-jest": "26.4.0",
     "ts-node": "~9.1.1",

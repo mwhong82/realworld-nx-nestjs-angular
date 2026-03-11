@@ -7,18 +7,18 @@ RealWorld "Conduit" — Medium.com 클론 애플리케이션. Nx 모노레포로
 
 ## 기술 스택 (변경 금지)
 
-| 계층 | 기술 | 버전 |
-|------|------|------|
-| 프론트엔드 | Angular | 11.2 |
-| 백엔드 | NestJS | 7.0 |
-| 모노레포 | Nx | 11.5.2 |
-| ORM | TypeORM | 0.2.31 |
-| 데이터베이스 | MySQL | 2.18.1 (드라이버) |
-| 인증 | JWT + Passport + bcrypt | passport-jwt 4.0, bcrypt 5.0.1 |
-| 테스팅 | Jest + Cypress | Jest 26.2.2, Cypress 6.0 |
-| 린팅 | ESLint + Prettier | |
-| 언어 | TypeScript | 4.0.3 |
-| UI | Bootstrap 4.5 + ng-bootstrap | |
+| 계층         | 기술                         | 버전                           |
+| ------------ | ---------------------------- | ------------------------------ |
+| 프론트엔드   | Angular                      | 11.2                           |
+| 백엔드       | NestJS                       | 7.0                            |
+| 모노레포     | Nx                           | 11.5.2                         |
+| ORM          | TypeORM                      | 0.2.31                         |
+| 데이터베이스 | MySQL                        | 2.18.1 (드라이버)              |
+| 인증         | JWT + Passport + bcrypt      | passport-jwt 4.0, bcrypt 5.0.1 |
+| 테스팅       | Jest + Cypress               | Jest 26.2.2, Cypress 6.0       |
+| 린팅         | ESLint + Prettier            |                                |
+| 언어         | TypeScript                   | 4.0.3                          |
+| UI           | Bootstrap 4.5 + ng-bootstrap |                                |
 
 ## 모노레포 구조
 
@@ -122,12 +122,27 @@ npm run migration:run          # TypeORM 마이그레이션 실행
 # 코드 품질
 npm run lint                   # ESLint 실행
 npx nx format:write            # Prettier 자동 포맷
+npm run validate               # lint-staged + tsc 병렬 실행
+npm run test:affected          # 변경된 프로젝트만 테스트 (master 기준)
+npm run lint:affected          # 변경된 프로젝트만 린트 (master 기준)
 
 # Nx 유틸리티
 npx nx dep-graph               # 의존성 그래프 시각화
 npx nx affected:test           # 변경된 프로젝트만 테스트
 npx nx run-many --target=test --all --parallel  # 전체 테스트
 ```
+
+## Git Hooks (Husky)
+
+| Hook           | 실행 내용                                                             | 도구                      |
+| -------------- | --------------------------------------------------------------------- | ------------------------- |
+| **pre-commit** | ESLint + Prettier (스테이징 파일) → tsc --noEmit (api + conduit 병렬) | lint-staged, concurrently |
+| **commit-msg** | Conventional Commits 형식 검증 (`feat:`, `fix:`, `docs:` 등)          | commitlint                |
+| **pre-push**   | nx affected:lint + nx affected:test (병렬, master 기준)               | Nx, concurrently          |
+
+- 설정 파일: `.lintstagedrc.json`, `commitlint.config.js`, `.husky/`
+- Hook 우회: `git commit --no-verify` (긴급 시에만 사용)
+- `npm install` 후 `husky`가 `prepare` 스크립트로 자동 설치됨
 
 ## 코딩 컨벤션
 
@@ -152,13 +167,16 @@ npx nx run-many --target=test --all --parallel  # 전체 테스트
 ## AI 에이전트 지침
 
 ### 해야 할 것
+
 - 디렉토리 수정 전 해당 AGENTS.md 먼저 읽기
 - 기존 패턴 준수 (BaseService, BaseEntity, 모듈 구조)
 - `@realworld/*` 임포트 경로 사용 (라이브러리 간 상대 경로 금지)
 - 변경 후 `npx nx test <프로젝트명>`으로 테스트
 - Nx 라이브러리 경계 준수 (scope/type 태그)
+- 독립적인 작업은 병렬로 수행 (예: 여러 파일 읽기, 여러 테스트 실행, 여러 에이전트 탐색 등 의존성이 없는 작업은 동시에 실행)
 
 ### 하지 말아야 할 것
+
 - 의존성 버전 업그레이드
 - 마이그레이션 없이 데이터베이스 스키마 수정
 - 앱 간 직접 임포트 (libs를 중간 계층으로 사용)

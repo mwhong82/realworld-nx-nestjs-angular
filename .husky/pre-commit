@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+# 1. lint-staged: 스테이징된 파일에 ESLint + Prettier 적용
+npx lint-staged
+
+# 2. TypeScript 타입 체크 (api + conduit 병렬)
+npx concurrently -n "tsc-api,tsc-conduit" --kill-others-on-fail \
+  "npx tsc --noEmit -p apps/api/tsconfig.json" \
+  "npx tsc --noEmit -p apps/conduit/tsconfig.json"
