@@ -6,20 +6,23 @@ import { ROLES_KEY } from './roles';
 @Injectable()
 export class RolesGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
-    super()
+    super();
   }
 
   canActivate(context: ExecutionContext): boolean {
-    const acceptedRoles = this.reflector.get<string[]>(ROLES_KEY, context.getHandler());
+    const acceptedRoles = this.reflector.get<string[]>(
+      ROLES_KEY,
+      context.getHandler()
+    );
     if (!acceptedRoles) {
       return true;
     }
     const request = context.switchToHttp().getRequest();
     if (!request.user) {
-      return true
+      return false;
     }
-    
+
     const userRole = request.user.role;
-    return acceptedRoles.includes(userRole)
+    return acceptedRoles.includes(userRole);
   }
 }

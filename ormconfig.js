@@ -1,12 +1,13 @@
+require('dotenv').config();
 const { getMetadataArgsStorage } = require("typeorm");
 
 module.exports = {
   type: 'mysql',
-  host: 'localhost',
-  port: 3306,
-  username: 'root',
-  password: 'qwerty1',
-  database: 'realworld_db',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT, 10) || 3306,
+  username: process.env.DB_USERNAME || 'root',
+  password: process.env.DB_PASSWORD || 'qwerty1',
+  database: process.env.DB_DATABASE || 'realworld_db',
   synchronize: false,
   entities: getMetadataArgsStorage().tables.map(tbl => tbl.target),
   timezone: 'Z',

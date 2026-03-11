@@ -1,6 +1,6 @@
 import { IApiConfig } from '@realworld/shared/api/config';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require('../../../../package.json')
+const packageJson = require('../../../../package.json');
 
 export const environment: IApiConfig = {
   production: false,
@@ -9,6 +9,6 @@ export const environment: IApiConfig = {
   port: 3333,
   version: packageJson.version,
   debug: true,
-  jwtSecret: 'jwtSecret',
-  jwtExpiresIn: '1y'
+  jwtSecret: process.env.JWT_SECRET || 'dev-jwt-secret-change-in-production',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1d',
 };
