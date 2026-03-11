@@ -1,0 +1,40 @@
+schema: spec-driven
+
+context: |
+  Project: RealWorld "Conduit" — Medium.com clone
+  Architecture: Nx 11.5.2 monorepo
+  Backend: NestJS 7.0, TypeORM 0.2.31, MySQL, JWT/Passport auth
+  Frontend: Angular 11.2, Bootstrap 4.5, ng-bootstrap, RxJS 6.6
+  Language: TypeScript 4.0 (strict mode)
+  Testing: Jest 26.2.2, Cypress 6.0
+  npm Scope: @realworld
+
+  Domain Model:
+    - User domain: User, Follow entities + JWT auth
+    - Article domain: Article, Comment, Favorite, Tag entities
+
+  Backend Pattern: BaseEntity (UUID, timestamps, soft delete) + BaseService<T> (CRUD delegation to TypeORM Repository)
+  Frontend Pattern: BaseDataService<T> (HTTP CRUD via HttpClient)
+
+  Conventions:
+    - PascalCase for classes/interfaces, camelCase for methods/variables
+    - Each feature in its own NestJS/Angular module
+    - Barrel exports via index.ts
+    - @realworld/* import paths (never relative cross-library)
+    - Nx library boundaries: scope:domain, scope:shared, type:feature, type:lib
+
+  Stack is FROZEN — no version upgrades allowed.
+
+rules:
+  proposal:
+    - Keep proposals under 500 words
+    - Always include a "Non-goals" section
+    - Reference specific file paths in the codebase
+  tasks:
+    - Break tasks into chunks of max 2 hours
+    - Include test commands for verification
+  spec:
+    - Specs are organized by API boundary, not per-entity
+    - Include all endpoints with HTTP method, path, auth requirement
+    - Reference actual source file paths
+    - Document business rules and error cases

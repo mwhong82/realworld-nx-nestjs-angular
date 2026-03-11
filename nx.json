@@ -16,9 +16,9 @@
     }
   },
   "projects": {
-    "conduit": { "tags": [] },
-    "conduit-e2e": { "tags": [], "implicitDependencies": ["conduit"] },
-    "api": { "tags": [] },
+    "conduit": { "tags": ["scope:app", "type:app"] },
+    "conduit-e2e": { "tags": ["scope:app", "type:app"], "implicitDependencies": ["conduit"] },
+    "api": { "tags": ["scope:app", "type:app"] },
     "shared-api-core": { "tags": ["scope:shared", "type:lib"] },
     "shared-api-constants": { "tags": ["scope:shared", "type:lib"] },
     "shared-api-error-handler": { "tags": ["scope:shared", "type:lib"] },

@@ -23,7 +23,7 @@ export class ArticleApiHandlersController {
 
     @Post('articles')
     async create(@Req() req, @Body() data: Partial<INewArticle>): Promise<IResponse<IArticle>> {
-        let article: Partial<Article> = {
+        const article: Partial<Article> = {
             ...data,
             authorId: req?.user?.sub,
             slug: StringUtil.asciiSlug(data.title) + '-' + new Date().getTime()
@@ -84,7 +84,7 @@ export class ArticleApiHandlersController {
             ...query,
             authorId: In(followedIds)
         })
-        let res = await this.articleService.findAll(options)
+        const res = await this.articleService.findAll(options)
 
         return new ListSuccessResponse<IArticle>({
             listData: await Promise.all(res.map(a => this.mapToResponseArticle(req?.user?.sub, a))),
@@ -96,7 +96,7 @@ export class ArticleApiHandlersController {
     @SkipAuth()
     @Get('articles/:slug')
     async findBySlug(@Req() req, @Param('slug') slug: string): Promise<IResponse<IArticle>> {
-        let article = await this.articleService.findOne({ slug: slug })
+        const article = await this.articleService.findOne({ slug: slug })
         if (!article) {
             throw new NotFoundException(NOT_FOUND_MSG)
         }
@@ -186,7 +186,7 @@ export class ArticleApiHandlersController {
     @Get('articles/:slug/comments')
     async findAllComments(@Req() req, @Param('slug') slug: string): Promise<IResponse<IComment>> {
         const options = mapQueriesToFindManyOptions<Comment>({articleSlug: slug})
-        let res = await this.commentService.findAll(options)
+        const res = await this.commentService.findAll(options)
 
         const jwtInfo = this.userService.getJwtInfo(req)
         return new ListSuccessResponse<IComment>({
@@ -197,7 +197,7 @@ export class ArticleApiHandlersController {
     
     @Post('articles/:slug/comments')
     async createAComment(@Req() req, @Param('slug') slug: string, @Body() data: INewComment): Promise<IResponse<IComment>> {
-        let comment: Partial<Comment> = {
+        const comment: Partial<Comment> = {
             ...data,
             authorId: req?.user?.sub,
             articleSlug: slug
@@ -234,7 +234,7 @@ export class ArticleApiHandlersController {
     @Get('tags')
     async findAllTags(@Query() query): Promise<IResponse<string>> {
         const options = mapQueriesToFindManyOptions(query)
-        let tags = await this.tagService.findAll(options)
+        const tags = await this.tagService.findAll(options)
 
         return new ListSuccessResponse<string>({
             listData: tags.map(t => t.name),

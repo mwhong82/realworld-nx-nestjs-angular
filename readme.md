@@ -2,147 +2,202 @@
 
 > ### [Nx monorepo](https://nx.dev) with [Nestjs](https://nestjs.com) and [Angular](https://angular.io) codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.
 
-
 This codebase was created to demonstrate a fully fledged fullstack application built with **[Nx monorepo](https://nx.dev), [Nestjs](https://nestjs.com) and [Angular](https://angular.io)** including CRUD operations, authentication, routing, pagination, and more.
 
-# Getting started
-*Prerequisites: To run this project locally, you need to have [Nodejs](https://nodejs.org/) and [MySQL](https://www.mysql.com/) installed on your operating system, remember to start your MySQl server also.*
+## Tech Stack
 
-**Clone this project**
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Monorepo | Nx | 11.5.2 |
+| Backend | NestJS | 7.0 |
+| Frontend | Angular | 11.2 |
+| Database | MySQL + TypeORM | 0.2.31 |
+| Auth | JWT + Passport + bcrypt | |
+| Testing | Jest + Cypress | 26.2.2 / 6.0 |
+| UI | Bootstrap 4.5 + ng-bootstrap | |
 
-`git clone https://github.com/nhaancs/fullstack-nx-nestjs-angular-realworld.git`
+## Getting Started
 
-**Switch to the repo folder**
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v14+)
+- [MySQL](https://www.mysql.com/) server running on localhost:3306
 
-`cd fullstack-nx-nestjs-angular-realworld`
+### Setup
 
-**Install dependencies**
+```bash
+# Clone the repository
+git clone https://github.com/mwhong82/realworld-nx-nestjs-angular.git
+cd realworld-nx-nestjs-angular
 
-`npm install`
+# Install dependencies
+npm install
 
-**Update below configs in `ormconfig.js` file to your database configs**
+# Configure database
+# Edit ormconfig.js: host, port, username, password, database
 
-`host`, `port`, `username`, `password`, `database`
+# Run database migrations
+npm run migration:run
 
-**Run migrations**
+# (Optional) Import sample data
+# Import realworld-dump-data-exported.sql into your MySQL database
 
-`npm run migration:run`
+# Start both API and frontend
+npm run serve:api-conduit
+```
 
-**Start both server (api) and client (conduit) apps**
+Open [http://localhost:4200](http://localhost:4200) in your browser.
 
-`npm run serve:api-conduit`
+### Test Accounts (with sample data)
+- `user1@email.com` / `qwerty1`
+- `user2@email.com` / `qwerty1`
 
-**Open your browser at [http://localhost:4200](http://localhost:4200)**
-
-You can now register a new account on your own to login and explore other funtionalities like create/update articles, update profile information, favorite articles, follow other users,... 
-
-You also can import dump data that exported in realworld-db-exported.sql file. Once dump data is imported, you can login with 2 pre-registered accounts: 
-- Email: user1@email.com / password: qwerty1 
-- Email: user2@email.com / password: qwerty1
-
-# Functionality overview
-The example application is a social blogging site (i.e. a Medium.com clone) called "Conduit". It uses a custom API for all requests, including authentication.
-
-**General functionality:**
-- Authenticate users via JWT (login/signup pages + logout button on settings page)
-- CRU* users (sign up & settings page - no deleting required)
-- CRUD Articles
-- CR*D Comments on articles (no updating required)
-- GET and display paginated lists of articles
-- Favorite articles
-- Follow other users
-
-**The general page breakdown looks like this:**
-- Home page (URL: /#/ )
-    - List of tags
-    - List of articles pulled from either Feed, Global, or by Tag
-    - Pagination for list of articles
-- Sign in/Sign up pages (URL: /#/login, /#/register )
-    - Uses JWT (store the token in localStorage)
-    - Authentication can be easily switched to session/cookie based
-- Settings page (URL: /#/settings )
-- Editor page to create/edit articles (URL: /#/editor, /#/editor/article-slug-here )
-- Article page (URL: /#/article/article-slug-here )
-    - Delete article button (only shown to article's author)
-    - Render markdown from server client side
-    - Comments section at bottom of page
-    - Delete comment button (only shown to comment's author)
-- Profile page (URL: /#/@:username, /#/@:username/favorites )
-    - Show basic user info
-    - List of articles populated from author's created articles or author's favorited articles
-
-# Project structure
-**Application**
-- Located in `apps` folder.
-- An app produces a binary. It contains the minimal amount of code required to package many libs to create an artifact that is deployed.
-- The app defines how to build the artifacts that are shipped to the user. If we have two separate targets (say desktop and mobile), we might have two separate apps.
-
-**Library**
-- Located in `libs` folder.
-- A lib is a set of files packaged together that is consumed by apps.
-- The purpose of having libs is to partition your code into smaller units that are easier to maintain and promote code reuse.
-
-**Library scopes**
-- Libs grouped into 2 scopes: `domain` and `shared`
-    - Libs have `domain` scope are grouped into one `domain` folder. For example: libs are related to `article` and `user` domain are grouped into `article` and `user` folders.
-    - Libs have `shared` scope are created for reusable purpose. They are grouped into `shared` folder. For example: `configuration`, `error-handler`, `logging`,...
-
-**Library types**
-- Type relates to the contents of the library and indicates its purpose and usage.
-- Libs groups into 2 types: 
-    - `feature`: contains mostly smart components, lazy loading modules, or api controllers.
-    - `lib`: Libs have type `lib` can be reused in other places.
-
-**Lib tags**
-- Every lib must have at least 2 tags: `scope` and `type`
-- For example: Lib `libs/shared/configutaion` has tag `scope:shared,type:lib`, lib `libs/article/feature` has tag `scope:domain,type:feature`, lib `libs/article/shared` has tag `scope:domain,type:lib`.
-
-**Workspace structure**
+## Architecture
 
 ```
-apps
-|____api
-|____conduit
-|____conduit-2e2
-libs
-|____article
-|    |____api
-|    |    |____handlers
-|    |    |____shared
-|    |____api-interfaces
-|    |____feature
-|    |____shared
-|
-|____user
-|    |____api
-|    |    |____handlers
-|    |    |____shared
-|    |____api-interfaces
-|    |____feature
-|    |____shared
-|       
-|____shared
-     |____api
-     |    |____config
-     |    |____constants
-     |    |____core
-     |    |____error-handler
-     |    |____foundation
-     |    |____validations
-     |____client-server
-     |____common
-     |____configuration
-     |____constants
-     |____core
-     |____directives
-     |____error-handler
-     |____foundation
-     |____interceptors
-     |____loading
-     |____logging
-     |____notification
-     |____spinner
-     |____storage
-     |____string-util
-     |____toaster
+apps/
+├── api/                NestJS REST API (port 3000)
+├── conduit/            Angular SPA (port 4200)
+└── conduit-e2e/        Cypress E2E tests
+
+libs/
+├── article/            Article domain (CRUD, comments, favorites, tags)
+│   ├── api/handlers/     REST controller
+│   ├── api/shared/       Entities + services
+│   ├── api-interfaces/   DTOs
+│   ├── feature/          Angular components
+│   └── shared/           Frontend services
+│
+├── user/               User domain (auth, profiles, follow)
+│   ├── api/handlers/     REST controller
+│   ├── api/shared/       Entities + services + JWT + guards
+│   ├── api-interfaces/   DTOs
+│   ├── feature/          Angular components
+│   └── shared/           Frontend services + guards
+│
+└── shared/             Cross-cutting concerns
+    ├── api/              Backend: config, core, foundation, error handler
+    ├── client-server/    Shared interfaces (HTTP types, response contracts)
+    └── (frontend)/       interceptors, foundation, storage, logging, etc.
 ```
+
+### Data Flow
+
+```
+Browser → Angular (port 4200)
+  → HTTP Interceptors (token, error, loading, caching, logging)
+    → NestJS API (port 3000)
+      → JwtAuthGuard (global)
+        → Controller → Service → TypeORM Repository → MySQL
+```
+
+### Key Patterns
+- **BaseEntity**: UUID PK, timestamps, soft delete — all entities extend this
+- **BaseService<T>**: Generic CRUD via TypeORM Repository — all services extend this
+- **Module-per-feature**: Each feature in its own NestJS/Angular module
+- **Lazy loading**: Frontend features loaded on demand via Angular router
+
+For detailed architecture documentation, see [docs/architecture.md](docs/architecture.md).
+
+## Development Commands
+
+```bash
+# Serve
+npm run serve:api              # Backend only (port 3000)
+npm run serve:conduit          # Frontend only (port 4200)
+npm run serve:api-conduit      # Both concurrently
+
+# Build
+npm run build-prod:api         # Production API build
+npm run build-prod:conduit     # Production frontend build
+
+# Test
+npm test                       # Run unit tests
+npm run e2e                    # Run Cypress E2E tests
+
+# Code Quality
+npm run lint                   # ESLint
+npx nx format:write            # Prettier auto-format
+
+# Database
+npm run migration:run          # Execute TypeORM migrations
+
+# Nx Utilities
+npx nx dep-graph               # Visualize dependency graph
+npx nx affected:test           # Test only affected projects
+```
+
+## API Documentation
+
+Full API endpoint documentation: [docs/api.md](docs/api.md)
+
+### Quick Reference
+
+| Domain | Endpoints |
+|--------|-----------|
+| Auth | `POST /users/login`, `POST /users` |
+| User | `GET /user`, `PUT /users` |
+| Profiles | `GET /profiles/:username`, `POST/DELETE .../follow` |
+| Articles | `GET/POST /articles`, `GET/PUT/DELETE /articles/:slug` |
+| Feed | `GET /articles/feed` |
+| Comments | `GET/POST /articles/:slug/comments`, `DELETE .../comments/:id` |
+| Favorites | `POST/DELETE /articles/:slug/favorite` |
+| Tags | `GET /tags` |
+
+## Functionality Overview
+
+Social blogging site (Medium.com clone) called "Conduit":
+
+- **Authentication**: JWT-based (login/signup + token in localStorage)
+- **Articles**: Create, read, update, delete with markdown support
+- **Comments**: Create and delete on articles
+- **Tags**: Filter articles by tag
+- **Favorites**: Favorite/unfavorite articles
+- **Profiles**: Follow/unfollow users, view authored/favorited articles
+- **Feed**: Personalized feed from followed authors
+
+### Pages
+| Page | URL | Description |
+|------|-----|-------------|
+| Home | `/` | Article feed (global/personal/tag), tag cloud |
+| Login | `/login` | Email + password login |
+| Register | `/register` | New user registration |
+| Settings | `/settings` | Edit profile and password |
+| Editor | `/editor`, `/editor/:slug` | Create/edit article |
+| Article | `/article/:slug` | Article view + comments |
+| Profile | `/profile/:username` | User profile + article tabs |
+
+## Project Structure
+
+### Library Organization
+
+Libraries are organized by **scope** and **type**:
+
+| Scope | Description | Example |
+|-------|-------------|---------|
+| `domain` | Domain-specific code | `article/*`, `user/*` |
+| `shared` | Reusable cross-cutting code | `shared/*` |
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `feature` | Smart components, controllers, lazy modules | `*-handlers`, `*-feature` |
+| `lib` | Pure logic, services, interfaces | `*-shared`, `*-interfaces` |
+
+### Import Convention
+
+All libraries use `@realworld/*` scoped imports:
+```typescript
+import { UserService } from '@realworld/user/api/shared';
+import { SharedCoreModule } from '@realworld/shared/core';
+```
+
+Path aliases are defined in `tsconfig.base.json`.
+
+## AI-Assisted Development
+
+This project is configured for AI-driven development (vibe coding):
+
+- **CLAUDE.md** — AI agent instructions and project context
+- **AGENTS.md** — Per-directory context files for AI agents
+- **OpenSpec** — Spec-driven workflow (`../openspec/`)
+
+See [CLAUDE.md](CLAUDE.md) for AI agent guidelines.

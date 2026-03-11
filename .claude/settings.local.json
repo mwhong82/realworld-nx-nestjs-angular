@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(claude --version)",
+      "Bash(claude plugin:*)",
+      "Bash(bash \"C:/Users/JohnWick/.claude/plugins/cache/omc/oh-my-claudecode/4.7.10/scripts/setup-progress.sh\" resume)",
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__read_text_file",
+      "Bash(tree -L 2 \"C:/dev/vibecoding/project1\" -I 'node_modules' 2>/dev/null || find \"C:/dev/vibecoding/project1\" -maxdepth 2 -type d ! -path '*/node_modules*' | sort | head -40)",
+      "mcp__plugin_oh-my-claudecode_t__state_write",
+      "Bash(find \"C:/dev/vibecoding/project1/realworldNxNestJs\" -maxdepth 1 -type f -name \"*.json\" -o -name \"*.js\" | grep -E '\\\\.\\(json|js\\)$')",
+      "Bash(echo \"=== CLAUDE.md ===\" && test -f \"C:/dev/vibecoding/project1/realworldNxNestJs/CLAUDE.md\" && echo \"OK\" && echo \"=== AGENTS.md files ===\" && for f in \"apps/api/AGENTS.md\" \"apps/conduit/AGENTS.md\" \"libs/article/AGENTS.md\" \"libs/user/AGENTS.md\" \"libs/shared/AGENTS.md\"; do test -f \"C:/dev/vibecoding/project1/realworldNxNestJs/$f\" && echo \"OK: $f\" || echo \"MISSING: $f\"; done)",
+      "mcp__plugin_oh-my-claudecode_t__state_list_active",
+      "mcp__plugin_oh-my-claudecode_t__state_clear",
+      "mcp__filesystem__search_files",
+      "Bash(find \"C:\\\\dev\\\\vibecoding\\\\project1\" -name \"user-api.md\" -o -name \"*user*spec*\" 2>/dev/null | head -10)",
+      "Bash(ls -la \"C:\\\\dev\\\\vibecoding\\\\project1\\\\realworldNxNestJs\\\\libs\\\\user\\\\api\\\\shared\\\\src\\\\lib\" | grep -E \"\\\\.ts$\")",
+      "Bash(ls -1 \"C:\\\\dev\\\\vibecoding\\\\project1\\\\realworldNxNestJs\\\\libs\\\\shared\\\\interceptors\\\\src\\\\lib\" | grep -E \"\\\\.interceptor\\\\.ts$\")"
+    ]
+  }
+}

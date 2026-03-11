@@ -40,3 +40,7 @@ Thumbs.db
 
 migrations/*.js
 log
+
+# OMC runtime state (session-specific, not shared)
+.omc/sessions/
+.omc/state/
