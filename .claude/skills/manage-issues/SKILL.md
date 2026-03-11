@@ -26,6 +26,7 @@ export PATH="$PATH:/c/Program Files/GitHub CLI"
 - 사용자 요청 분석하여 이슈 내용 파악
 - 필요 시 코드베이스 탐색으로 관련 파일/라인 식별
 - 기존 이슈 중복 확인: `gh issue list --repo $REPO --search "키워드"`
+- **인수 조건(Acceptance Criteria)** 도출 — 이슈 완료 판단 기준을 명확히 정의
 
 ### 2단계: 라벨 확인/생성
 
@@ -64,6 +65,11 @@ gh issue create --repo $REPO \
 ## 해결 방안
 1. 구체적인 해결 방법
 2. 단계별 접근
+
+## 인수 조건 (Acceptance Criteria)
+- [ ] 조건 1: 구체적이고 검증 가능한 완료 기준
+- [ ] 조건 2: 테스트/빌드 통과 여부
+- [ ] 조건 3: 코드 리뷰/보안 확인 등
 
 ## 심각도: CRITICAL/HIGH/MEDIUM/LOW / 노력: 낮음/중간/높음
 
@@ -105,11 +111,32 @@ EOF
 )"
 ```
 
-### 이슈 닫기
+### 이슈 닫기 (인수 조건 검증 필수)
+
+이슈를 닫기 전에 **반드시 인수 조건을 검증**해야 한다:
+
+1. `gh issue view $ISSUE_NUM --repo $REPO`로 이슈 본문의 인수 조건 확인
+2. 각 조건을 코드/테스트/빌드로 실제 검증
+3. 검증 결과를 코멘트에 포함하여 닫기
 
 ```bash
-gh issue close $ISSUE_NUM --repo $REPO --comment "해결 완료: 설명"
+gh issue close $ISSUE_NUM --repo $REPO --comment "$(cat <<'EOF'
+## 완료 — 인수 조건 검증 결과
+
+### 인수 조건 충족 여부
+- [x] 조건 1: 검증 방법과 결과
+- [x] 조건 2: 검증 방법과 결과
+- [x] 조건 3: 검증 방법과 결과
+
+### 관련 커밋
+- `커밋해시` 커밋 메시지
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
 ```
+
+**중요**: 인수 조건이 하나라도 미충족이면 이슈를 닫지 않는다. 대신 진행상황 업데이트 코멘트를 남기고 미충족 항목을 명시한다.
 
 ## 이슈 조회
 
