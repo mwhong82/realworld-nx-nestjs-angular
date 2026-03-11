@@ -1,6 +1,13 @@
 #!/usr/bin/env sh
 
-# 변경된 프로젝트의 린트 + 유닛 테스트 실행
-npx concurrently -n "lint,test" --kill-others-on-fail \
-  "npx nx affected:lint --base=master" \
-  "npx nx affected:test --base=master"
+# 코드 파일(.ts, .js)이 변경된 경우만 린트 + 테스트 실행
+CHANGED_CODE=$(git diff --name-only master...HEAD | grep -E '\.(ts|js|tsx|jsx)$' || true)
+
+if [ -n "$CHANGED_CODE" ]; then
+  echo "🔍 코드 파일 변경 감지 — lint + test 실행"
+  npx concurrently -n "lint,test" --kill-others-on-fail \
+    "npx nx affected:lint --base=master" \
+    "npx nx affected:test --base=master"
+else
+  echo "📄 문서/설정 파일만 변경 — lint + test 건너뜀"
+fi

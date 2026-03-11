@@ -3,7 +3,14 @@
 # 1. lint-staged: 스테이징된 파일에 ESLint + Prettier 적용
 npx lint-staged
 
-# 2. TypeScript 타입 체크 (api + conduit 병렬)
-npx concurrently -n "tsc-api,tsc-conduit" --kill-others-on-fail \
-  "npx tsc --noEmit -p apps/api/tsconfig.json" \
-  "npx tsc --noEmit -p apps/conduit/tsconfig.json"
+# 2. TypeScript 타입 체크 — 코드 파일(.ts, .js, .json 설정)이 변경된 경우만 실행
+STAGED_CODE=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|js|tsx|jsx)$' || true)
+
+if [ -n "$STAGED_CODE" ]; then
+  echo "🔍 코드 파일 변경 감지 — TypeScript 타입 체크 실행"
+  npx concurrently -n "tsc-api,tsc-conduit" --kill-others-on-fail \
+    "npx tsc --noEmit -p apps/api/tsconfig.json" \
+    "npx tsc --noEmit -p apps/conduit/tsconfig.json"
+else
+  echo "📄 문서/설정 파일만 변경 — TypeScript 타입 체크 건너뜀"
+fi
